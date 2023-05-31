@@ -19,3 +19,6 @@ bin-release/
 
 
 .vscode/
+
+udp-receiver/bin
+udp-server/obj

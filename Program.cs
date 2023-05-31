@@ -15,15 +15,15 @@ class Program
     static void receive()
     {
 
-        string ipAddress = "192.168.0.1";
-        int port = 1234;
+        string ipAddress = "192.168.0.1"; //外部接口地址
+        int port = 1234; //外部接口端口
 
         UdpClient udpClient = new UdpClient();
         udpClient.Connect(ipAddress, port);
 
         try
         {
-            Console.WriteLine("Server will listen on port: 1234");
+            Console.WriteLine("Server will listen on ip "+ ipAddress + ", port: 1234");
             // 接收数据包
             IPEndPoint remoteEP = new IPEndPoint(IPAddress.Any, 0);
             byte[] receivedData = udpClient.Receive(ref remoteEP);

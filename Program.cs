@@ -3,51 +3,49 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-class Program 
+class Program
 {
-
     static void Main()
     {
-        Console.WriteLine("Hello, World!");
-        receive();
-    }
+        // 监听的本地端口号
+        int localPort = 2234;
 
-    static void receive()
-    {
-
-        string ipAddress = "192.168.0.1"; //外部接口地址
-        int port = 1234; //外部接口端口
-
-        UdpClient udpClient = new UdpClient();
-        udpClient.Connect(ipAddress, port);
+        // 创建UdpClient对象，并绑定到本地端口
+        UdpClient udpListener = new UdpClient(localPort);
 
         try
         {
-            Console.WriteLine("Server will listen on ip "+ ipAddress + ", port: 1234");
-            // 接收数据包
-            IPEndPoint remoteEP = new IPEndPoint(IPAddress.Any, 0);
-            byte[] receivedData = udpClient.Receive(ref remoteEP);
+            Console.WriteLine("UDP接口已启动，等待数据...");
 
-            string receivedMessage = Encoding.UTF8.GetString(receivedData);
+            while (true)
+            {
+                // 接收UDP数据
+                IPEndPoint remoteEP = null;
+                byte[] receiveBytes = udpListener.Receive(ref remoteEP);
 
-            Console.WriteLine("Received UDP message: " + receivedMessage);
-            Console.WriteLine("From: " + remoteEP.Address + ":" + remoteEP.Port);
+                // 将接收到的字节数组转换为字符串
+                string message = Encoding.UTF8.GetString(receiveBytes);
 
-            var jsonObject = System.Text.Json.JsonSerializer.Deserialize<GetPData2>(receivedMessage);
-            if(jsonObject != null){
-                Console.WriteLine("GetPData2: " + jsonObject.ToString());
+                Console.WriteLine($"接收到来自 {remoteEP.Address}:{remoteEP.Port} 的数据");
+                var jsonObject = System.Text.Json.JsonSerializer.Deserialize<GetPData2>(message);
+                if (jsonObject != null)
+                {
+                    Console.WriteLine("GetPData2: " + jsonObject.ToString());
+                }
             }
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Console.WriteLine("Error: " + e.Message);
+            Console.WriteLine("接收UDP数据时出现错误：" + ex.Message);
         }
         finally
         {
-            udpClient.Close();
+            // 关闭UdpClient对象
+            udpListener.Close();
         }
     }
 }
+
 
 class GetPData2
 {

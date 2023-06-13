@@ -13,6 +13,10 @@
 1. cd udp-server
 2. dotnet build && dotnet run
 
+## 广播测试
+
+udp-broadcast 
+udp-listener
 
 在`udp-receiver`的终端窗口输出如下：
 ```code
